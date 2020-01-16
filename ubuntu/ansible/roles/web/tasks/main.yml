@@ -1,0 +1,15 @@
+- name: copy web files
+  copy:
+    src: /home/eladt/Desktop/8200/ubuntu/webserver
+    dest: /home/bynet
+    mode: 0777
+
+- name: install flask
+  pip:
+    name: flask
+ 
+#- name: run web
+#  shell: python3 /home/bynet/server/web.py
+
+- name: run flask
+  shell: nohup python3 /home/bynet/server/web.py </dev/null >/dev/null 2>&1 &

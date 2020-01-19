@@ -71,7 +71,7 @@ resource "vsphere_virtual_machine" "vm" {
         domain = ""
       }
       network_interface {
-        ipv4_address = "${var.prefix_ip}${114 + count.index}"
+        ipv4_address = "${var.prefix_ip}${113 + count.index}"
         ipv4_netmask = 24
       }
 

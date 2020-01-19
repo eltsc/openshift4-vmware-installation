@@ -86,23 +86,3 @@ module "compute" {
   memory           = "${var.compute_memory}"
   num_cpu          = "${var.compute_num_cpus}"
 }
-
-module "ubuntu" {
-  source = "./machine"
-
-  name             = "ubuntu"
-  instance_count   = "1"
-  resource_pool_id = "${module.resource_pool.pool_id}"
-  folder           = "${module.folder.path}"
-  datastore        = "Local2"
-  network          = "${var.vm_network}"
-  datacenter_id    = "${data.vsphere_datacenter.dc.id}"
-  template         = "template-ubuntu-18.04"
-  cluster_domain   = "${var.cluster_domain}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
-  ip_addresses     = ["20.8.10.114"]
-  machine_cidr     = "${var.machine_cidr}"
-  memory           = "2048"
-  num_cpu          = "2"
-}

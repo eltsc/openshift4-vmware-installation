@@ -1,0 +1,10 @@
+- name: install isc-dhcp-server
+  apt: pkg=isc-dhcp-server
+
+- name: copy configure file
+  copy:
+    src: ../dhcpd.conf
+    dest: /etc/dhcp/dhcpd.conf
+ 
+- name: restart dhcp server
+  shell: sudo systemctl restart isc-dhcp-server

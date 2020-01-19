@@ -51,5 +51,56 @@ haproxy_stats: |
       stats show-legends
       stats auth {{ haproxy_user }}:{{ haproxy_pass }}
       stats admin if TRUE
-haproxy_conf: ""
+haproxy_conf: |
+    frontend openshift-api-server
+        bind *:6443
+        default_backend openshift-api-server
+        mode tcp
+        option tcplog
+
+    backend openshift-api-server
+        balance source
+        mode tcp
+        server btstrap 192.168.1.116:6443 check
+        server master1 192.168.1.111:6443 check
+        server master2 192.168.1.112:6443 check
+        server master3 192.168.1.113:6443 check
+
+    frontend machine-config-server
+        bind *:22623
+        default_backend machine-config-server
+        mode tcp
+        option tcplog
+
+    backend machine-config-server
+        balance source
+        mode tcp
+        server btstrap 192.168.1.116:22623 check
+        server master1 192.168.1.111:22623 check
+        server master2 192.168.1.112:22623 check
+        server master3 192.168.1.113:22623 check
+
+    frontend ingress-http
+        bind *:80
+        default_backend ingress-http
+        mode tcp
+        option tcplog
+
+    backend ingress-http
+        balance source
+        mode tcp
+        server worker1 192.168.1.114:80 check
+        server worker2 192.168.1.115:80 check
+
+    frontend ingress-https
+        bind *:443
+        default_backend ingress-https
+        mode tcp
+        option tcplog
+
+    backend ingress-https
+        balance source
+        mode tcp
+        server worker1 192.168.1.114:443 check
+        server worker2 192.168.1.115:443 check
 haproxy_cert: {}

@@ -1,19 +1,21 @@
 ---
-#- hosts: 10.8.20.115
-#  become: true
-#  roles:
-#    - basic
-#- hosts: 10.8.20.114
-#  become: true
-#  roles:
-#  - role: ansible-apache2
-#  - role: ansible-mariadb-mysql
-#  - role: ansible-powerdns  
-# - hosts: openshift-test-DNS
-#   become: true
-#   roles:
-#   - web
 - hosts: 10.8.20.113
   become: true
   roles:
   - dhcp
+- hosts: 10.8.20.114
+  become: true
+  roles:
+  - role: ansible-apache2
+  - role: ansible-mariadb-mysql
+  - role: ansible-powerdns  
+- hosts: 10.8.20.115
+  become: true
+  roles:
+  - role: entercloudsuite.haproxy
+    haproxy_user: haproxyuser
+    haproxy_pass: haproxypass
+- hosts: 10.8.20.116
+  become: true
+  roles:
+  - web

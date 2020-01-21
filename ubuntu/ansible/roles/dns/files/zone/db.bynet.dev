@@ -1,0 +1,19 @@
+;
+; BIND data file for local loopback interface
+;
+$TTL	604800
+@	IN	SOA	openshift-test-DNS.bynet.dev. admin.bynet.dev. (
+			      3		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+; name servers - NS records
+	IN	NS	openshift-test-DNS.bynet.dev.
+
+; name servers - A records
+openshift-test-DNS.bynet.dev.	IN	A	10.8.20.113
+
+; 10.8.20.0 - A records
+openshift-test-DHCP.bynet.dev.	IN	A	10.8.20.114

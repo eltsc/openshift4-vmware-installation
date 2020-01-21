@@ -35,12 +35,12 @@ data "vsphere_host" "host" {
 }
 
 resource "vsphere_virtual_machine" "vm" {
-  count = 1
+  count = 2
   name             = "openshift-test-${var.names[count.index]}"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
   datastore_id     = "${data.vsphere_datastore.datastore.id}"
 
-  num_cpus = 2
+  num_cpus = 3
   memory   = 2048
   guest_id = "${data.vsphere_virtual_machine.template.guest_id}"
   
@@ -68,7 +68,7 @@ resource "vsphere_virtual_machine" "vm" {
     customize {
       linux_options {
         host_name = "openshift-test-${var.names[count.index]}"
-        domain = ""
+        domain = "bynet.dev"
       }
       network_interface {
         ipv4_address = "${var.prefix_ip}${113 + count.index}"

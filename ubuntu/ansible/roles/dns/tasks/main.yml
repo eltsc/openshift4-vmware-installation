@@ -1,0 +1,10 @@
+- name: install bind9
+  apt: pkg=bind9
+
+- name: copy configure file
+  copy:
+    src: ../files/
+    dest: /etc/bind/
+ 
+- name: restart dhcp bind9
+  shell: sudo systemctl restart bind9

@@ -35,12 +35,12 @@ data "vsphere_host" "host" {
 }
 
 resource "vsphere_virtual_machine" "vm" {
-  count = 2
+  count = 1
   name             = "openshift-test-${var.names[count.index]}"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
   datastore_id     = "${data.vsphere_datastore.datastore.id}"
 
-  num_cpus = 3
+  num_cpus = 2
   memory   = 2048
   guest_id = "${data.vsphere_virtual_machine.template.guest_id}"
   

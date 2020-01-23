@@ -14,10 +14,10 @@
 ## blue.example.com
 ## 192.168.100.1
 ## 192.168.100.10
-10.8.20.113
-10.8.20.114
-10.8.20.115
-10.8.20.116
+10.8.24.10
+10.8.24.11
+10.8.24.12
+10.8.24.13
 # Ex 2: A collection of hosts belonging to the 'webservers' group
 
 ## [webservers]

@@ -12,4 +12,4 @@
 #  shell: python3 /home/bynet/server/web.py
 
 - name: run flask
-  shell: nohup python3 /home/bynet/server/web.py </dev/null >/dev/null 2>&1 &
+  shell: sudo python3 /home/bynet/server/web.py &

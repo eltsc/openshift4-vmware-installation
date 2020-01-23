@@ -19,7 +19,7 @@
 #   - role: entercloudsuite.haproxy
 #     haproxy_user: haproxyuser
 #     haproxy_pass: haproxypass
-- hosts: 10.8.24.13
+- hosts: 10.8.24.10
   become: true
   roles:
   - web

@@ -3,7 +3,7 @@
     "config": {
       "append": [
         {
-          "source": "http://10.8.20.117/ignition",
+          "source": "http://10.8.24.10/ignition",
           "verification": {}
         }
       ]

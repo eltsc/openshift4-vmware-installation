@@ -1,8 +1,8 @@
 ---
-- hosts: 10.8.24.10
-  become: true
-  roles:
-  - dns
+# - hosts: 10.8.24.10
+#   become: true
+#   roles:
+#   - dns
 # - hosts: 10.8.24.11
 #   become: true
 #   roles:
@@ -19,7 +19,7 @@
 #   - role: entercloudsuite.haproxy
 #     haproxy_user: haproxyuser
 #     haproxy_pass: haproxypass
-# - hosts: 10.8.24.13
-#   become: true
-#   roles:
-#   - web
+- hosts: 10.8.24.13
+  become: true
+  roles:
+  - web

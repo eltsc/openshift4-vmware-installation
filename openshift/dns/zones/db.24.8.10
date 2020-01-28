@@ -1,0 +1,26 @@
+;
+; BIND reverse data file for local loopback interface
+;
+$TTL	604800
+@	IN	SOA	bynet.dev. admin.bynet.dev. (
+			      7		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+; name servers - 
+	IN	NS	openshift-test-DNS.bynet.dev.
+
+; PTR records
+10	IN	PTR	openshift-test-DNS.bynet.dev.
+11	IN	PTR	openshift-test-DHCP.bynet.dev.
+12	IN	PTR	openshift-test-LB.bynet.dev.
+13	IN	PTR	openshift-test-WEB.bynet.dev.
+20	IN	PTR	control-plane-0.vmopen.bynet.dev
+21      IN      PTR     control-plane-1.vmopen.bynet.dev
+22      IN      PTR     control-plane-2.vmopen.bynet.dev
+23	IN	PTR	compute-0.vmopen.bynet.dev
+24      IN      PTR     compute-1.vmopen.bynet.dev
+25      IN      PTR     compute-2.vmopen.bynet.dev
+26	IN	PTR	bootstrap-0.vmopen.bynet.dev

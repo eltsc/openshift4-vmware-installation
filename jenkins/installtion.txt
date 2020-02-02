@@ -1,0 +1,32 @@
+oc new-project jenkins
+
+oc adm policy add-scc-to-user privileged system:serviceaccount:jenkins:default
+oc adm policy add-cluster-role-to-user edit system:serviceaccount:jenkins:default
+
+create pv:
+oc create -f pv.yaml 
+
+create pvc:
+oc create -f pvc.yaml 
+
+create configmap with cert for gitlab:
+oc create configmap ca-pemstore --from-file=./gitlab.pem -n jenkins 
+
+oc apply -f jenkinsDeployment.yaml
+
+oc expose dc jenkins
+
+oc apply -f jenkinsRoute.yaml
+
+
+optional if need to use in private image as a dokcer container in kubernetes pod template:
+oc apply -f ClusterRole.yaml
+oc adm policy add-cluster-role-to-user NameOfClusterRole system:serviceaccount:jenkins:default
+
+----------------------------
+for run pre-build script, plugin need to be installed : pre SCM buildstep plugin
+
+enter cert in EnvVars as CRT
+in build configuration - build enviroment - run buildstep before SCM run - execute shell:
+echo $CRT > /etc/pki/ca-trust/source/anchors/gitlab.pem
+update-ca-trust extract

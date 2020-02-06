@@ -6,6 +6,7 @@ metadata:
   name: confluence
   namespace: confluence
 spec:
+  host: confluence.apps.bos.bynet.dev
   port:
     targetPort: 8090
   subdomain: ""

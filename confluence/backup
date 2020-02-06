@@ -6,10 +6,6 @@ metadata:
 spec:
   replicas: 1
   template:
-    metadata:
-      labels:
-        app: confluence
-        deploymentconfig: confluence
     spec:
       volumes:
         - name: confluence-data
@@ -17,20 +13,11 @@ spec:
             claimName: pvc-confluence
       containers:
         - name: confluence
-          image: docker.io/atlassian/confluence-server
-          securityContext:
-            privileged: true
+          image: atlassian/confluence-server:latest
           ports:
-            - containerPort: 8091
-              protocol: TCP
             - containerPort: 8090
               protocol: TCP
-          env:
-            - name: JVM_MINIMUM_MEMORY
-              value: 2048m
-            - name: JVM_MAXIMUM_MEMORY
-              value: 2048m
-          resources: 
+          resources:
             requests:
               memory: 4Gi
           volumeMounts:

@@ -1,0 +1,65 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  name: confluence
+  namespace: confluence
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: confluence
+        deploymentconfig: confluence
+    spec:
+      volumes:
+        - name: confluence-data
+          persistentVolumeClaim:
+            claimName: pvc-confluence
+        - name: ca-pemstore
+          configMap:
+            name: ca-pemstore
+      containers:
+        - name: confluence
+          image: docker.io/atlassian/confluence-server:6.8-ubuntu-18.04-adoptopenjdk8
+          securityContext:
+            privileged: true
+          lifecycle:
+            postStart:
+              exec:
+   #             command: ["/bin/bash", "-c", "/opt/java/openjdk/bin/keytool -import -keystore /opt/java/openjdk/lib/security/cacerts -file /etc/ssl/certs/my-cert/bos.pem -storepass changeit -noprompt && cp /etc/ssl/certs/my-cert/bos.pem /usr/local/share/ca-certificates/bos.crt && update-ca-certificates"]
+                command: ["/bin/bash", "-c", "/opt/java/openjdk/bin/keytool -import -keystore /opt/java/openjdk/jre/lib/security/cacerts -file /etc/ssl/certs/my-cert/bos.pem -storepass changeit -noprompt && cp /etc/ssl/certs/my-cert/bos.pem /usr/local/share/ca-certificates/bos.crt && update-ca-certificates"]  
+          ports:
+            - containerPort: 8091
+              protocol: TCP
+            - containerPort: 8090
+              protocol: TCP
+          env:
+           # - name: JVM_MAXIMUM_MEMORY
+           #   value: 2048m
+           # - name: JVM_MINIMUM_MEMORY
+          #    value: 2048m
+            - name: ATL_TOMCAT_SCHEME
+              value: https
+            - name: ATL_TOMCAT_SECURE
+              value: "true" 
+     #       - name: ATL_PROXY_NAME
+    #          value: confluence.apps.bos.bynet.dev
+   #         - name: ATL_PROXY_PORT
+  #            value: "443"
+            - name: ATL_TOMCAT_PROTOCOL
+              value: "org.apache.coyote.http11.Http11NioProtocol"
+#            - name: ATL_TOMCAT_PORT   
+#              value: "443"
+          resources: 
+            requests:
+              memory: 4Gi
+          volumeMounts:
+            - name: confluence-data
+              mountPath: /var/atlassian/application-data/confluence
+            - name: ca-pemstore
+              mountPath: /etc/ssl/certs/my-cert 
+          imagePullPolicy: Always
+      serviceaccount: default
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst

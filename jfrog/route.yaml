@@ -6,6 +6,7 @@ metadata:
   name: artifactory
   namespace: jfrog
 spec:
+  host: artifactory-ha.apps.vmopen.bynet.dev
   port:
     targetPort: 8081
   subdomain: ""
@@ -14,6 +15,6 @@ spec:
     termination: edge
   to:
     kind: Service
-    name: jfrog-artifactory 
+    name: jfrog-artifactory-ha 
     weight: 100
   wildcardPolicy: None

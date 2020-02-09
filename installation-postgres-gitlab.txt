@@ -1,0 +1,14 @@
+in postgres namespace
+
+helm upgrade --install postgresql . --values ./values-production.yaml --set metrics.enabled=false --set postgresqlPassword=password --set postgresqlDatabase=gitlab
+
+### check cluster status
+### on primary pod in psql run - SELECT client_addr, state FROM pg_stat_replication;
+
+in gitlab namespace
+
+oc create -f secret-post-git.yaml
+
+helm upgrade --install gitlab ./gitlab --set nginx-ingress.enabled=false  --set global.hosts.domain=apps.bos.bynet.dev --set global.ingress.configureCertmanager=false --set certmanager.install=false --set gitlab-runner.install=false --set postgresql.install=false --set global.psql.host=10.128.3.241 --set global.psql.password.secret=postgres-pass --set global.psql.password.key=pass --set global.psql.username=postgres --set global.psql.database=gitlab
+
+

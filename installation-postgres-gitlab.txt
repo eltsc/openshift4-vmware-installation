@@ -11,4 +11,10 @@ oc create -f secret-post-git.yaml
 
 helm upgrade --install gitlab ./gitlab --set nginx-ingress.enabled=false  --set global.hosts.domain=apps.bos.bynet.dev --set global.ingress.configureCertmanager=false --set certmanager.install=false --set gitlab-runner.install=false --set postgresql.install=false --set global.psql.host=10.128.3.241 --set global.psql.password.secret=postgres-pass --set global.psql.password.key=pass --set global.psql.username=postgres --set global.psql.database=gitlab
 
+#HA-redis
+
+#need to change ha-redis.enabled=true in value file or in command
+
+helm upgrade --install gitlab ./gitlab --set nginx-ingress.enabled=false  --set global.hosts.domain=apps.bos.bynet.dev --set global.ingress.configureCertmanager=false --set certmanager.install=false --set gitlab-runner.install=false --set postgresql.install=false --set global.psql.host=10.128.3.241 --set global.psql.password.secret=postgres-pass --set global.psql.password.key=pass --set global.psql.username=postgres --set global.psql.database=gitlab --set redis-ha.image.tag=fd4f46221e7361d5736a1039cb429f042d28478b --set redis.enabled=false
+
 

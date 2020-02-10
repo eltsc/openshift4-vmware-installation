@@ -38,16 +38,16 @@ spec:
            #   value: 2048m
            # - name: JVM_MINIMUM_MEMORY
           #    value: 2048m
-            - name: ATL_TOMCAT_SCHEME
-              value: https
-            - name: ATL_TOMCAT_SECURE
-              value: "true" 
+         #   - name: ATL_TOMCAT_SCHEME
+        #      value: https
+       #     - name: ATL_TOMCAT_SECURE
+      #        value: "true" 
      #       - name: ATL_PROXY_NAME
     #          value: confluence.apps.bos.bynet.dev
    #         - name: ATL_PROXY_PORT
   #            value: "443"
-            - name: ATL_TOMCAT_PROTOCOL
-              value: "org.apache.coyote.http11.Http11NioProtocol"
+ #           - name: ATL_TOMCAT_PROTOCOL
+#              value: "org.apache.coyote.http11.Http11NioProtocol"
 #            - name: ATL_TOMCAT_PORT   
 #              value: "443"
           resources: 

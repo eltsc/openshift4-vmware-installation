@@ -272,6 +272,7 @@ spec:
         {{- end }}
       {{- end }}
       spec:
+        storageClassName: slave
         accessModes:
         {{- range .Values.persistence.accessModes }}
           - {{ . | quote }}

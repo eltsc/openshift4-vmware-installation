@@ -18,6 +18,8 @@ oc new-project $postgresNamespace
 
 helm upgrade --install stolon ./stolon  
 
+PROXYIP=$(kubectl get services | fgrep proxy | grep -oP '\d+\.\d+\.\d+\.\d+')
+
 read -e -p "Enter Your gitlab Namespace: " -i "gitlab" gitlabNamespace
 
 gitlabNamespace="${gitlabNamespace:-gitlab}"
@@ -28,7 +30,7 @@ oc adm policy add-scc-to-group anyuid system:authenticated
 
 oc create -f secret-post-git.yaml
 
-helm upgrade --install gitlab ./gitlab --set nginx-ingress.enabled=false  --set global.hosts.domain=apps.vmopen.bynet.dev --set global.ingress.configureCertmanager=false --set certmanager.install=false --set gitlab-runner.install=false --set postgresql.install=false --set global.psql.host=172.30.1.167 --set global.psql.password.secret=postgres-pass --set global.psql.password.key=pass --set global.psql.username=postgres --set redis-ha.image.tag=fd4f46221e7361d5736a1039cb429f042d28478b --set redis.enabled=false
+helm upgrade --install gitlab ./gitlab --set nginx-ingress.enabled=false  --set global.hosts.domain=apps.vmopen.bynet.dev --set global.ingress.configureCertmanager=false --set certmanager.install=false --set gitlab-runner.install=false --set postgresql.install=false --set global.psql.host=$PROXYIP --set global.psql.password.secret=postgres-pass --set global.psql.password.key=pass --set global.psql.username=postgres --set redis-ha.image.tag=fd4f46221e7361d5736a1039cb429f042d28478b --set redis.enabled=false
 
 # helm upgrade --install gitlab ./gitlab --set nginx-ingress.enabled=false  --set global.hosts.domain=apps.$cluster.bynet.dev --set global.ingress.configureCertmanager=false --set certmanager.install=false --set gitlab-runner.install=false
 

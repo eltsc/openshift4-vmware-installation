@@ -23,11 +23,10 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  storageClassName1: "thin"
-  storageClassName2: "slave"
+  storageClassName: ""
   accessModes:
     - ReadWriteOnce
-  size: 11Gi
+  size: 10Gi
 
 rbac:
   create: true

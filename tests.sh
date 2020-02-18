@@ -47,15 +47,19 @@ postgresNamespace="${postgresNamespace:-postgresql}"
 
 # oc create secret generic pg-repl --from-literal=username='repl_username' --from-literal=password='repl_password'
 
-# helm upgrade --install $postgresNamespace ./stolon  
+helm upgrade --install $postgresNamespace ./stolon  
 
-COMMAND=$(kubectl get pod $postgresNamespace-stolon-keeper-0 -o 'jsonpath={.status.phase}')
+for i in 0 1 2
+do
+COMMAND=$(kubectl get pod $postgresNamespace-stolon-keeper-$i -o 'jsonpath={.status.phase}')
 until [[ $COMMAND == "Running" ]]
 do
-    echo 'waiting for pod to be ready'
-    sleep 2
+    COMMAND=$(kubectl get pod $postgresNamespace-stolon-keeper-$i -o 'jsonpath={.status.phase}')
+    echo "waiting for pod $postgresNamespace-stolon-keeper-$i to be ready"
+    sleep 2.5
 done
-
+echo "pod $postgresNamespace-stolon-keeper-$i ready"
+done
 PROXYIP=$(kubectl get services | fgrep proxy | grep -oP '\d+\.\d+\.\d+\.\d+')
 
 oc exec -it $postgresNamespace-stolon-keeper-0 -- psql --host $PROXYIP --port 5432 --username postgres -W -c 'CREATE DATABASE gitlabhq_production OWNER postgres;' 

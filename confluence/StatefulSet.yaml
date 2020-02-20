@@ -1,0 +1,71 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: confluence
+  namespace: confluence
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: confluence
+  template:
+    metadata:
+      labels:
+        app: confluence
+        deploymentconfig: confluence
+    spec:
+      volumes:
+        - name: ca-pemstore
+          configMap:
+            name: ca-pemstore
+      containers:
+        - name: confluence
+          # image: docker.io/atlassian/confluence-server:6.15.6-ubuntu-18.04-adoptopenjdk8
+          image: docker.io/atlassian/confluence-server
+          securityContext:
+            privileged: true
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/bash", "-c", "/opt/java/openjdk/bin/keytool -import -keystore /opt/java/openjdk/lib/security/cacerts -file /etc/ssl/certs/my-cert/bos.pem -storepass changeit -noprompt && cp /etc/ssl/certs/my-cert/bos.pem /usr/local/share/ca-certificates/bos.crt && update-ca-certificates"]
+                # command: ["/bin/bash", "-c", "/opt/java/openjdk/bin/keytool -import -keystore /opt/java/openjdk/jre/lib/security/cacerts -file /etc/ssl/certs/my-cert/bos.pem -storepass changeit -noprompt && cp /etc/ssl/certs/my-cert/bos.pem /usr/local/share/ca-certificates/bos.crt && update-ca-certificates"]  
+          ports:
+            - containerPort: 8091
+              protocol: TCP
+            - containerPort: 8090
+              protocol: TCP
+          env:
+            - name: JVM_MINIMUM_MEMORY
+              value: 2048m
+            - name: JVM_MAXIMUM_MEMORY
+              value: 2048m
+            - name: CATALINA_CONNECTOR_PROXYNAME
+              value: confluence.apps.vmopen.bynet.dev
+            - name: CATALINA_CONNECTOR_PROXYPORT
+              value: "443"
+            - name: CATALINA_CONNECTOR_SCHEME
+              value: https
+            - name: CATALINA_CONNECTOR_SECURE
+              value: "true"
+          resources: 
+            requests:
+              memory: 4Gi
+          volumeMounts:
+            - name: confluence-data
+              mountPath: /var/atlassian/application-data/confluence
+            - name: ca-pemstore
+              mountPath: /etc/ssl/certs/my-cert 
+          imagePullPolicy: Always
+      serviceaccount: default
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+  volumeClaimTemplates:
+    - metadata:
+        name: confluence-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 10Gi
+

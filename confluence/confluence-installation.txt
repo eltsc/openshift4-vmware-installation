@@ -1,0 +1,29 @@
+# install postgresql 
+
+helm upgrade --install postgresql ../postgresql --set postgresqlPassword=password --set postgresqlDatabase=confluence
+
+# install confluence
+
+# create configMap with crt of openshift
+oc create configmap ca-pemstore --from-file=../../bos.pem
+
+# create statefulset
+oc apply -f ./StatefulSet.yaml
+
+# create service and route
+oc apply -f service.yaml
+oc apply -f ./route.yaml
+
+# installation process
+- select team calander
+- enter license in confluence
+- select own database 
+host: postgresql.confluence.svc.cluster.local
+port: 5432
+database: confluence
+user: postgres
+password: password
+- wait until logs/atlassian-confluence.log write  " INFO [http-nio-8090-exec-5] [atlassian.plugin.manager.DefaultPluginManager] logTime Plugin system earlyStartup ended"
+- then refresh the website and continue the installation
+
+# if there is no normal ui delete pod of statefulset (it will be restart automaticly) and wait few minutes until the web back.

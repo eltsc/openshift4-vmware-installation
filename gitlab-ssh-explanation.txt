@@ -1,0 +1,22 @@
+to create a ssh access to gitlab from everywhere we need:
+
+add --set global.shell.port=2222 to helm install of gitlab
+
+to create a service:
+
+oc create -f gitlab-ssh.yaml
+
+in addition, the portNode have to be configured in haproxy like that:
+
+frontend ingress-ssh
+    bind *:2222  
+    default_backend ingress-ssh
+    mode tcp 
+    option tcplog
+
+backend ingress-ssh
+    balance source
+    mode tcp
+    server compute-0 10.8.24.23:32222 check
+    server compute-1 10.8.24.24:32222 check
+    server compute-2 10.8.24.25:32222 check

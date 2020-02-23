@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab-shell-nodeport
+  labels:
+    app: gitlab-shell
+    name: gitlab-shell-nodeport
+spec:
+  type: NodePort
+  ports:
+    - port: 2222
+      nodePort: 32222
+      name: ssh
+  selector:
+    app: gitlab-shell

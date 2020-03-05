@@ -1,6 +1,27 @@
 # JFrog Artifactory-ha Chart Changelog
 All changes to this chart will be documented in this file.
 
+## [2.0.19] - Feb 26, 2020
+* Updated Artifactory version to 7.2.1 
+
+## [2.0.12] - Feb 07, 2020
+* Remove protection flag `databaseUpgradeReady` which was added to check internal postgres upgrade 
+
+## [2.0.0] - Feb 07, 2020
+* Updated Artifactory version to 7.0.0
+
+## [1.4.10] - Feb 13, 2020
+* Add support for SSH authentication to Artifactory
+
+## [1.4.9] - Feb 10, 2020
+* Fix custom DB password indention
+
+## [1.4.8] - Feb 9, 2020
+* Add support for `tpl` in the `postStartCommand`
+
+## [1.4.7] - Feb 4, 2020
+* Support customisable Nginx kind 
+
 ## [1.4.6] - Feb 2, 2020
 * Add a comment stating that it is recommended to use an external PostgreSQL with a static password for production installations
 

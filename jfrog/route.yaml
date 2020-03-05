@@ -4,17 +4,17 @@ metadata:
   annotations:
     openshift.io/host.generated: "true"
   name: artifactory
-  namespace: jfrog
+  namespace: jfrog2
 spec:
-  host: artifactory-ha.apps.vmopen.bynet.dev
+  host: artifactory.apps.vmopen.bynet.dev
   port:
-    targetPort: 8081
+    targetPort: 8082
   subdomain: ""
   tls:
     insecureEdgeTerminationPolicy: Redirect
     termination: edge
   to:
     kind: Service
-    name: jfrog-artifactory-ha 
+    name: jfrog-artifactory 
     weight: 100
   wildcardPolicy: None

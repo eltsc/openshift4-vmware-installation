@@ -1,0 +1,20 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  name: artifactory
+  namespace: jfrog
+spec:
+  host: artifactory-ha.apps.vmopen.bynet.dev
+  port:
+    targetPort: 8081
+  subdomain: ""
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: jfrog-artifactory-ha 
+    weight: 100
+  wildcardPolicy: None

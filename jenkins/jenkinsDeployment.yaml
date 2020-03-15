@@ -40,7 +40,9 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/sh", "-c", "/usr/lib/jvm/jre/bin/keytool -import -keystore /etc/pki/ca-trust/extracted/java/cacerts -file /etc/ssl/certs/my-cert/gitlab.pem -storepass changeit -noprompt && cp /etc/ssl/certs/my-cert/gitlab.pem /etc/pki/ca-trust/source/anchors/gitlab.pem && update-ca-trust extract"]
+                command: ["/bin/sh", "-c", "/usr/lib/jvm/jre/bin/keytool -import -keystore /etc/pki/ca-trust/extracted/java/cacerts -file /etc/ssl/certs/my-cert/gitlab.pem -storepass changeit -noprompt &&\
+                /usr/lib/jvm/jre/bin/keytool -import -keystore /etc/pki/ca-trust/extracted/java/cacerts -file /etc/ssl/certs/my-cert/openshift.pem -storepass changeit -noprompt &&\
+                 cp /etc/ssl/certs/my-cert/* /etc/pki/ca-trust/source/anchors/ && update-ca-trust extract"]
           ports:
             - containerPort: 50000
               protocol: TCP

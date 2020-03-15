@@ -1,0 +1,8 @@
+FROM quay.io/openshift/origin-jenkins-agent-base
+
+COPY ./gitlab.pem /etc/pki/ca-trust/source/anchors/gitlab.pem
+RUN update-ca-trust extract && useradd -ou 0 -g 0 jenkins
+
+USER jenkins
+
+ENTRYPOINT [ "/usr/local/bin/run-jnlp-client" ]

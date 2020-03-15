@@ -1,0 +1,24 @@
+FROM quay.io/openshift/origin-jenkins-agent-base
+
+ENV GO_VERSION_DEFAULT=1.13.5 \
+    GOROOT=/usr/local/go \
+    GOPATH=/usr/src/go
+ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+COPY ./gitlab.pem /etc/pki/ca-trust/source/anchors/gitlab.pem
+
+RUN if [ -z $GO_VERSION ] ; then GO_VERSION=${GO_VERSION_DEFAULT} ; fi && \
+    curl -L -o /usr/go${GO_VERSION}.linux-amd64.tar.gz https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \
+    mkdir -p /usr/src/go/src/redhat && \
+    tar -xzf /usr/go${GO_VERSION}.linux-amd64.tar.gz && \
+    mv $(pwd)/go /usr/local/ && \
+    go get -u github.com/golang/dep/cmd/dep && \
+    chown -R 1001 /usr/src/go && \
+    chown -R 1001 /usr/local/go && \
+    chown -R 1001 ${HOME}/.cache/go-build && \
+    rm -f /usr/go${GO_VERSION}.linux-amd64.tar.gz && \
+    update-ca-trust extract && useradd -ou 0 -g 0 jenkins
+
+USER jenkins
+
+ENTRYPOINT [ "/usr/local/bin/run-jnlp-client" ]

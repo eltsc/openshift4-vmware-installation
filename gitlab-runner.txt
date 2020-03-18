@@ -1,0 +1,47 @@
+image - ubuntu:18.04
+
+cp to the container:
+1. gitlab.crt (docker cp ./gitlab.crt CONTAINER_ID:/home/gitlab.crt )
+2. openshift.crt (docker cp ./openshift.crt CONTAINER_ID:/home/openshift.crt )
+
+inside container:
+
+cp /home/* /usr/local/share/ca-certificates/
+
+apt install:
+1. git
+2. curl
+3. ca-certificates
+
+update-ca-certificates
+
+add gitlab.apps.vmopen.bynet.dev to /etc/hosts
+
+install gitlab-runner:
+1. download deb file with curl / copy deb file from outside
+2. dpkg -i gitlab-runner_<arch>.deb
+
+register runner
+
+runner run
+
+############################################333
+
+optional:
+
+docker commit CONTAINER_ID REPOSETORY/gitlab-runner:ubuntu18
+
+create pod in openshift:
+-----------------------------------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: runner
+spec:
+  containers:
+  - env:
+    image: REPOSETORY/gitlab-runner:ubuntu18
+    name: runner
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do sleep 100;done"]
+------------------------------------------------------

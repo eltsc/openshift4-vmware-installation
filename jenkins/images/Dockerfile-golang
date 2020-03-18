@@ -6,6 +6,7 @@ ENV GO_VERSION_DEFAULT=1.13.5 \
 ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
 COPY ./gitlab.pem /etc/pki/ca-trust/source/anchors/gitlab.pem
+COPY ./openshift.pem /etc/pki/ca-trust/source/anchors/openshift.pem
 
 RUN if [ -z $GO_VERSION ] ; then GO_VERSION=${GO_VERSION_DEFAULT} ; fi && \
     curl -L -o /usr/go${GO_VERSION}.linux-amd64.tar.gz https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \

@@ -1,0 +1,7 @@
+docker build . -t elts/runner --rm=false
+
+docker volume create runner
+
+docker run --rm -it --add-host gitlab.apps.vmopen.bynet.dev:10.8.24.12 -v runner:/etc/gitlab-runner elts/runner:latest register
+
+docker run --rm -it -d --add-host gitlab.apps.vmopen.bynet.dev:10.8.24.12 -v runner:/etc/gitlab-runner elts/runner:latest run

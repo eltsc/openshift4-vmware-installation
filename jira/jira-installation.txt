@@ -1,0 +1,22 @@
+# install jira
+
+# create configMap with crt of openshift
+oc create configmap ca-pemstore --from-file=../../bos.pem
+
+# create statefulset
+oc apply -f ./deployment.yaml
+
+# create service and route
+oc apply -f service.yaml
+oc apply -f ./route.yaml
+
+create database oc exec -it postgresql-stolon-keeper-0  -- psql --host 172.30.15.149 --port 5432 --username postgres -W -c 'CREATE DATABASE jira OWNER postgres;'
+
+# installation process
+host: 172.30.15.149 ####### proxiIP of stolon
+port: 5432
+database: jira
+user: postgres
+password: password
+
+every time that the installation stuck need to wait few minutes

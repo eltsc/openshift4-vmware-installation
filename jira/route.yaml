@@ -1,0 +1,20 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  name: jira
+  namespace: jira
+spec:
+  host: jira.apps.vmopen.bynet.dev
+  port:
+    targetPort: 8080
+  subdomain: ""
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: jira 
+    weight: 100
+  wildcardPolicy: None

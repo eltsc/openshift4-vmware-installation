@@ -1,0 +1,50 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  name: splunk
+  namespace: splunk
+  labels:
+    app: splunk
+spec:
+  triggers:
+    - type: ConfigChange
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: splunk
+        deploymentconfig: splunk
+    spec:
+      volumes:
+        - name: ca-pemstore
+          configMap:
+            name: ca-pemstore
+      containers:
+        - name: splunk
+          image: docker.io/splunk/splunk:latest
+          securityContext:
+            privileged: true
+          lifecycle:
+            postStart:
+              exec:
+                # command: ["/bin/sh", "-c", "cp /etc/ssl/certs/bos.pem /etc/pki/ca-trust/source/anchors/ && update-ca-trust extract"]
+                command: ["/bin/sh", "-c", "echo 'host = splunk.apps.vmopen.bynet.dev' >> etc/system/local/inputs.conf"]
+          env:
+            - name: SPLUNK_START_ARGS
+              value: "--accept-license"
+            - name: SPLUNK_PASSWORD
+              value: password     
+            - name: decideOnStartup
+              value: splunk.apps.vmopen.bynet.dev   
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - name: ca-pemstore
+              mountPath: /etc/ssl/certs
+          imagePullPolicy: Always
+      serviceaccount: default
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst

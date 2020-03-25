@@ -3,18 +3,18 @@ kind: Route
 metadata:
   annotations:
     openshift.io/host.generated: "true"
-  name: confluence
-  namespace: confluence
+  name: splunk
+  namespace: splunk
 spec:
-  host: confluence.apps.vmopen.bynet.dev
+  host: splunk.apps.vmopen.bynet.dev
   port:
-    targetPort: 8090
+    targetPort: 8000
   subdomain: ""
   tls:
     insecureEdgeTerminationPolicy: Redirect
     termination: edge
   to:
     kind: Service
-    name: confluence 
+    name: splunk 
     weight: 100
   wildcardPolicy: None

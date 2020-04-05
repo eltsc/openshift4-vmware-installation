@@ -1,0 +1,37 @@
+;
+; BIND data file for local loopback interface
+;
+$TTL	604800
+@	IN	SOA	open-dns.bynet.dev. admin.bynet.dev. (
+			      6		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+; name servers - NS records
+	IN	NS	open-dns.bynet.dev.
+
+; name servers - A records
+open-dns.bynet.dev.	IN	A	10.8.27.10
+
+; 10.8.27.0 - A records
+registry.bynet.dev.	IN	A	10.8.27.15
+open-lb.bynet.dev.	IN	A	10.8.27.12
+openshift-test-WEB.bynet.dev.	IN	A	10.8.27.13
+control-plane-0.offopen.bynet.dev.	IN	A	10.8.27.20
+control-plane-1.offopen.bynet.dev.	IN	A	10.8.27.21
+control-plane-2.offopen.bynet.dev.	IN	A	10.8.27.22
+compute-0.offopen.bynet.dev.	IN	A	10.8.27.23
+compute-1.offopen.bynet.dev.	IN	A	10.8.27.24
+compute-2.offopen.bynet.dev.	IN	A	10.8.27.25
+bootstrap-0.offopen.bynet.dev.	IN	A	10.8.27.26
+api.offopen.bynet.dev.	IN	A	10.8.27.12
+api-int.offopen.bynet.dev.	IN	A	10.8.27.12
+*.apps.offopen.bynet.dev.	IN	A	10.8.27.12
+etcd-0.offopen.bynet.dev.	IN	A	10.8.27.20
+etcd-1.offopen.bynet.dev.	IN	A	10.8.27.21
+etcd-2.offopen.bynet.dev.	IN	A	10.8.27.22
+_etcd-server-ssl._tcp.offopen	86400	IN	SRV	0	10	2380	etcd-0.offopen
+_etcd-server-ssl._tcp.offopen	86400	IN	SRV	0	10	2380	etcd-1.offopen
+_etcd-server-ssl._tcp.offopen	86400	IN	SRV	0	10	2380	etcd-2.offopen

@@ -1,0 +1,72 @@
+to create DNS, LB and WebServer follow this link:
+https://www.openshift.com/blog/openshift-4-2-vsphere-install-quickstart
+
+DNS:
+I used in ubuntu server and I installed bind9.
+configure static IP
+steps:
+install bind9
+modify file /etc/default/bind9 - OPTIONS="-u bind -4"
+modify file /etc/bind/named.conf.local
+modify file /etc/bind/named.conf.options
+mkdir /etc/bind/zones
+create files with zone's names db.* in zones folder and edit them.
+optional: sudo named-checkconf
+optional: sudo named-checkzone ZoneName db.*(ZoneName)
+sudo systemctl restart bind9
+
+WebServer:
+in the same server of the DNS I installed Flask.
+pip3 install --no-index --find-links /path/to/files
+mkdir WebServer folder.
+copy the web script (later we also copy the ignition file and run the app)
+
+LB:
+I used in ubuntu server and I installed HAproxy.
+configure static IP
+steps:
+install HAproxy
+copy the haproxy.cfg file to /etc/haproxy and edit him.
+sudo systemctl restart haproxy.service
+
+create registry follow the link:
+https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html-single/installing/index#installing-restricted-networks-preparations
+
+I installed this on RHEL7
+when we created the pull secret dont forget to add port to the server.
+
+$ export OCP_RELEASE=4.2.25 --need to add something like -64_86x
+$ export LOCAL_REGISTRY='registry.XXX.XXX:5000'
+$ export LOCAL_REPOSITORY='ocp4/openshift4'
+$ export PRODUCT_REPO='openshift-release-dev' 
+$ export LOCAL_SECRET_JSON='<path_to_pull_secret>'
+$ export RELEASE_NAME="ocp-release"
+
+after finish to create the registry and got a openshift-installer that pin to it need to move this vm to a dissconnected network.
+
+with the openshift-installer that we created we need to create ignition files.
+dont forget to create first manifests - change schedueler to false and then ignition files.
+
+now follow th link:
+https://www.openshift.com/blog/deploying-a-user-provisioned-infrastructure-environment-for-openshift-4-1-on-vsphere
+copy the bootstrap.ign to web server and run it.
+
+in terraform fils:
+put worker.ign and master.ign in the right palces.
+configure the terraform.tfvars fils.
+and also in machine/ignition.tf change gw and DNS.
+Remove the route53 section from main.tf .
+
+copy to this server/client the linx_amd64 folder with all the providers.
+run -> terraform init -plugin-dir=/path/to/folder
+and than continue to follow instructions until the end.
+
+additional:
+ip static RHEL/CENTOS:
+edit /etc/sysconfig/network-scripts/ifcfg-ens192
+BOOTPROTO="none"
+IPADDR="X.X.X.X"
+PREFIX="24"
+GATEWAY="X.X.X.X"
+DNS1="X.X.X.X"
+and then run -> systemctl restart network

@@ -61,6 +61,9 @@ copy to this server/client the linx_amd64 folder with all the providers.
 run -> terraform init -plugin-dir=/path/to/folder
 and than continue to follow instructions until the end.
 
+enter to UI:
+the certificate is secret exist in namespace: openshift-ingress-operator and called - router-ca
+
 additional:
 ip static RHEL/CENTOS:
 edit /etc/sysconfig/network-scripts/ifcfg-ens192

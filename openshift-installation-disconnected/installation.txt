@@ -32,7 +32,7 @@ sudo systemctl restart haproxy.service
 create registry follow the link:
 https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html-single/installing/index#installing-restricted-networks-preparations
 
-I installed this on RHEL7
+I installed this on RHEL7 - the server need access to internet in the proccess until installer created.
 when we created the pull secret dont forget to add port to the server.
 
 $ export OCP_RELEASE=4.2.25 --need to add something like -64_86x

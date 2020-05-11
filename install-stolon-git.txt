@@ -2,6 +2,8 @@ in stolon namespace
 
 helm upgrade --install stolon ./stolon  
 
+oc adm policy add-scc-to-user anyuid system:serviceaccount:stolon:pg-stolon
+
 kubectl get services | fgrep proxy
 
 take proxy ip and put in global.psql.host

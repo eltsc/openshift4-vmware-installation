@@ -1,0 +1,37 @@
+sudo apt install docker.io
+sudo apt install docker-compose
+sudo apt install make
+optional - sudo apt install redis-tools
+
+docker-compose.yml
+
+redis:  
+  image: redis
+  command: redis-server /usr/local/etc/redis/redis.conf
+  volumes:
+    - ./redis.conf:/usr/local/etc/redis/redis.conf
+  ports:
+    - "6379"
+
+redis.conf
+
+port 6379
+cluster-enabled yes
+cluster-config-file nodes.conf
+cluster-node-timeout 5000
+appendonly yes
+
+
+sudo docker-compose up --scale redis=6 -d
+
+wget http://download.redis.io/redis-stable.tar.gz
+tar xvzf redis-stable.tar.gz
+cd redis-stable
+cd deps
+make hiredis jemalloc linenoise lua geohash-int
+cd ..
+make
+
+sudo docker network inspect bridge
+
+./redis-stable/src/redis-cli --cluster create 172.17.0.2:6379 172.17.0.3:6379 172.17.0.4:6379 172.17.0.5:6379 172.17.0.6:6379 172.17.0.7:6379 --cluster-replicas 1

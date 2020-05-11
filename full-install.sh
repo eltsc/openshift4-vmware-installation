@@ -23,6 +23,8 @@ oc create secret generic pg-repl --from-literal=username='repl_username' --from-
 
 helm upgrade --install $postgresNamespace ./stolon  
 
+oc adm policy add-scc-to-user anyuid system:serviceaccount:stolon:pg-stolon
+
 for i in 0 1 2
 do
 COMMAND=$(kubectl get pod $postgresNamespace-stolon-keeper-$i -o 'jsonpath={.status.phase}')

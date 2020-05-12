@@ -1,17 +1,41 @@
 sudo apt install docker.io
 sudo apt install docker-compose
-sudo apt install make
-optional - sudo apt install redis-tools
+
+for redis-cli, needed only on one VM:
+  sudo apt install make
+  sudo apt install gcc
+  optional - sudo apt install redis-tools
+
+for redis-cli version 6:
+  wget http://download.redis.io/redis-stable.tar.gz
+  tar xvzf redis-stable.tar.gz
+  cd redis-stable
+  cd deps
+  make hiredis jemalloc linenoise lua geohash-int
+  cd ..
+  make
+
+we will create 3 masters and 3 replicas. master and replica on each server.
+on each server need to create 2 folders.
+mkdir redis1
+mkdir redis2
+
+inside the folders create docker-compose.yml, redis.conf and data folder.
+(in redis2 folder need to change the port in files to 6380)
 
 docker-compose.yml
 
-redis:  
-  image: redis
-  command: redis-server /usr/local/etc/redis/redis.conf
-  volumes:
-    - ./redis.conf:/usr/local/etc/redis/redis.conf
-  ports:
-    - "6379"
+version: '3.4'
+services:
+  redis:  
+    image: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    network_mode: "host"
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - ./data:/data
+    ports:
+      - 6379:6379
 
 redis.conf
 
@@ -21,17 +45,52 @@ cluster-config-file nodes.conf
 cluster-node-timeout 5000
 appendonly yes
 
+run this command in redis1 and redis2 folders:
+sudo docker-compose up -d
 
-sudo docker-compose up --scale redis=6 -d
+run this with correct IPs:
+./redis-stable/src/redis-cli --cluster create X.X.X.138:6379 X.X.X.138:6380 X.X.X.101:6379 X.X.X.101:6380 X.X.X.102:6379 X.X.X.102:6380 --cluster-replicas 1
 
-wget http://download.redis.io/redis-stable.tar.gz
-tar xvzf redis-stable.tar.gz
-cd redis-stable
-cd deps
-make hiredis jemalloc linenoise lua geohash-int
-cd ..
-make
 
-sudo docker network inspect bridge
+##################################################
+SENTINEL
 
-./redis-stable/src/redis-cli --cluster create 172.17.0.2:6379 172.17.0.3:6379 172.17.0.4:6379 172.17.0.5:6379 172.17.0.6:6379 172.17.0.7:6379 --cluster-replicas 1
+do it on every redis VM (3 times)
+
+mkdir sentinel
+inside the folder create docker-compose.yml, sentinel.conf and data folder (not sure that data folder is necessary).
+
+docker-compose.yml
+
+version: '3.4'
+services:
+  redis:  
+    image: redis
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    network_mode: "host"
+    volumes:
+      - ./sentinel.conf:/usr/local/etc/redis/sentinel.conf
+      - ./data:/data
+    ports:
+      - 26379:26379
+
+
+sentinel.conf
+
+sentinel monitor redis1 X.X.X.X 6379 2
+sentinel down-after-milliseconds redis1 5000
+sentinel failover-timeout redis1 60000
+sentinel parallel-syncs redis1 1
+
+sentinel monitor redis2 X.X.X.X 6379 2
+sentinel down-after-milliseconds redis2 5000
+sentinel failover-timeout redis2 60000
+sentinel parallel-syncs redis2 1
+
+sentinel monitor redis3 X.X.X.X 6379 2
+sentinel down-after-milliseconds redis3 5000
+sentinel failover-timeout redis3 60000
+sentinel parallel-syncs redis3 1
+
+and run:
+sudo docker-compose up -d

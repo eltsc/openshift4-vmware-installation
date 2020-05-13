@@ -1,6 +1,10 @@
 sudo apt install docker.io
 sudo apt install docker-compose
 
+##############################
+not sure that the following commans are necessary.
+we can run redis-cli inside a container.
+
 for redis-cli, needed only on one VM:
   sudo apt install make
   sudo apt install gcc
@@ -14,6 +18,7 @@ for redis-cli version 6:
   make hiredis jemalloc linenoise lua geohash-int
   cd ..
   make
+##############################
 
 we will create 3 masters and 3 replicas. master and replica on each server.
 on each server need to create 2 folders.
@@ -48,8 +53,8 @@ appendonly yes
 run this command in redis1 and redis2 folders:
 sudo docker-compose up -d
 
-run this with correct IPs:
-./redis-stable/src/redis-cli --cluster create X.X.X.138:6379 X.X.X.138:6380 X.X.X.101:6379 X.X.X.101:6380 X.X.X.102:6379 X.X.X.102:6380 --cluster-replicas 1
+run this with correct IPs inside container or with redis-cli version 6 from everywhere:
+redis-cli --cluster create X.X.X.138:6379 X.X.X.138:6380 X.X.X.101:6379 X.X.X.101:6380 X.X.X.102:6379 X.X.X.102:6380 --cluster-replicas 1
 
 
 ##################################################
@@ -58,6 +63,7 @@ SENTINEL
 do it on every redis VM (3 times)
 
 mkdir sentinel
+cd sentinel
 inside the folder create docker-compose.yml, sentinel.conf and data folder (not sure that data folder is necessary).
 
 docker-compose.yml

@@ -1,0 +1,67 @@
+postgresql
+
+MASTER
+
+mkdir postgresql
+cd postgresql
+mkdir data
+chmod 777 data
+
+create docker-compose.yml file (config password):
+
+version: "3.3"
+
+services:
+  primary:
+    image: crunchydata/crunchy-postgres:centos7-10.3-1.8.2
+    network_mode: "host"
+    environment:
+    - PGHOST=/tmp
+    - MAX_CONNECTIONS=10
+    - MAX_WAL_SENDERS=5
+    - PG_MODE=primary
+    - PG_PRIMARY_USER=test
+    - PG_PRIMARY_PASSWORD=password
+    - PG_DATABASE=testdb
+    - PG_USER=postgres
+    - PG_PASSWORD=password
+    - PG_ROOT_PASSWORD=password
+    - PG_PRIMARY_PORT=5432
+    volumes:
+    - ./data:/pgdata
+    ports:
+    - "5432"
+
+
+REPLICA
+
+mkdir postgresql
+cd postgresql
+mkdir data
+chmod 777 data
+
+create docker-compose.yml file (config passwords and PRIMARY_HOST_IP):
+
+version: "3.3"
+
+services:
+  replica:
+    image: crunchydata/crunchy-postgres:centos7-10.3-1.8.2
+    network_mode: "host"
+    environment:
+    - PGHOST=/tmp
+    - MAX_CONNECTIONS=10
+    - MAX_WAL_SENDERS=5
+    - PG_MODE=replica
+    - PG_PRIMARY_HOST=PRIMARY_HOST_IP
+    - PG_PRIMARY_PORT=5432
+    - PG_PRIMARY_USER=test
+    - PG_PRIMARY_PASSWORD=password
+    - PG_DATABASE=testdb
+    - PG_USER=postgres
+    - PG_PASSWORD=password
+    - PG_ROOT_PASSWORD=password
+    volumes:
+    - ./data:/pgdata
+    ports:
+    - "5432"

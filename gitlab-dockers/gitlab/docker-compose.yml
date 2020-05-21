@@ -1,0 +1,35 @@
+web:
+  image: 'gitlab/gitlab-ee:latest'
+  restart: always
+  hostname: 'gitlab-dev'
+  environment:
+    GITLAB_OMNIBUS_CONFIG: |
+      external_url = 'https://gitlab-dev.bynet.dev'
+      postgresql['enable'] = false
+      gitlab_rails['db_adapter'] = 'postgresql'
+      gitlab_rails['db_encoding'] = 'UTF8'
+      gitlab_rails['db_host'] = '10.8.24.40'
+      gitlab_rails['db_username'] = 'postgres'
+      gitlab_rails['db_password'] = 'password'
+      redis['enable'] = false
+      redis['master_name'] = 'redis1'
+      redis['master_password'] = 'password'
+      gitlab_rails['redis_sentinels'] = [
+        {'host' => '10.8.24.138', 'port' => 26379},
+        {'host' => '10.8.24.101', 'port' => 26379},
+        {'host' => '10.8.24.102', 'port' => 26379}
+      ] 
+      prometheus['listen_address'] = '0.0.0.0:9090'
+      grafana['http_addr'] = '0.0.0.0'
+  ports:
+    - '3300:3000'
+    - '9090:9090'
+    - '26379:26379'
+    - '6379:6379'
+    - '80:80'
+    - '443:443'
+    - '2222:22'
+  volumes: 
+    - '/srv/gitlab/config:/etc/gitlab' 
+    - '/srv/gitlab/logs:/var/log/gitlab' 
+    - '/srv/gitlab/data:/var/opt/gitlab' 

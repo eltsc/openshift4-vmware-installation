@@ -25,7 +25,7 @@ on each server need to create 2 folders.
 mkdir redis1
 mkdir redis2
 
-inside the folders create docker-compose.yml, redis.conf and data folder.
+inside the folders create docker-compose.yml, redis.conf (config password) and data folder.
 (in redis2 folder need to change the port in files to 6380)
 
 docker-compose.yml
@@ -44,6 +44,8 @@ services:
 
 redis.conf
 
+requirepass PASSWORD
+masterauth PASSWORD
 port 6379
 cluster-enabled yes
 cluster-config-file nodes.conf
@@ -83,6 +85,7 @@ services:
 
 sentinel.conf
 
+sentinel auth-pass redis1 PASSWORD
 sentinel monitor redis1 X.X.X.X 6379 2
 sentinel down-after-milliseconds redis1 5000
 sentinel failover-timeout redis1 60000
@@ -100,3 +103,36 @@ sentinel parallel-syncs redis3 1
 
 and run:
 sudo docker-compose up -d
+
+
+
+
+########################################################3
+for regular replica
+
+redis.conf of master 
+
+requirepass password
+masterauth password
+port 6379
+appendonly yes
+
+
+
+
+redis.conf of replica
+
+requirepass password
+masterauth password
+port 6379
+appendonly yes
+replicaof 10.8.24.138 6379
+
+sentinel.conf
+
+sentinel monitor redis1 X.X.X.X 6379 2
+sentinel down-after-milliseconds redis1 5000
+sentinel failover-timeout redis1 60000
+sentinel parallel-syncs redis1 1
+sentinel auth-pass redis1 password
+

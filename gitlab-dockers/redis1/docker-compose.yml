@@ -1,0 +1,19 @@
+version: '3.4'
+services:
+  redis:  
+    image: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    network_mode: "host"
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - ./data:/data
+    ports:
+      - 6379:6379
+  redis-exporter:
+    image: oliver006/redis_exporter
+    network_mode: "host"
+    command: -redis.addr redis://10.8.24.138:6379
+    environment:
+      - REDIS_PASSWORD=password
+    ports:
+      - 9121:9121

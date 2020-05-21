@@ -1,0 +1,58 @@
+Ensure that you have docker & docker compose 
+
+Ensure that ports 80, 433 & 22 are free (in following example, I reexport them as 8080, 1443 & 1022, but it is bad practice) 
+
+Create docker-compose.yml file
+
+web:
+  image: 'gitlab/gitlab-ee:latest'
+  restart: always
+  hostname: 'gitlab-dev'
+  environment:
+    GITLAB_OMNIBUS_CONFIG: |
+      external_url = 'https://gitlab-dev.bynet.dev'
+      postgresql['enable'] = false
+      gitlab_rails['db_adapter'] = 'postgresql'
+      gitlab_rails['db_encoding'] = 'UTF8'
+      gitlab_rails['db_host'] = '10.8.24.40'
+      gitlab_rails['db_username'] = 'postgres'
+      gitlab_rails['db_password'] = 'password'
+      redis['enable'] = false
+      redis['master_name'] = 'redis1'
+      redis['master_password'] = 'password'
+      gitlab_rails['redis_sentinels'] = [
+        {'host' => '10.8.24.138', 'port' => 26379},
+        {'host' => '10.8.24.101', 'port' => 26379},
+        {'host' => '10.8.24.102', 'port' => 26379}
+      ] 
+  ports:
+    - '26379:26379'
+    - '6379:6379'
+    - '80:80'
+    - '443:443'
+    - '2222:22'
+  volumes: 
+    - '/srv/gitlab/config:/etc/gitlab' 
+    - '/srv/gitlab/logs:/var/log/gitlab' 
+    - '/srv/gitlab/data:/var/opt/gitlab' 
+
+### For publish prometheus
+
+      prometheus['listen_address'] = '0.0.0.0:9090'
+  ports:
+    - '9090:9090'
+
+
+
+this conf with manual redis (master + 2 replica + 3 sentinels) and postgres on openshift (stolon with NodePort)
+
+sudo mkdir -p /srv/gitlab/{config,logs,data} 
+
+Create /srv/gitlab/config/Gitlab.gitlab-license file with license content 
+
+Run: 
+docker-compose up -d 
+
+Wait a few minutes and open https://hostname.domain.name 
+
+Once it is available, change root 

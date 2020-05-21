@@ -1,0 +1,11 @@
+version: '3.4'
+services:
+  redis:  
+    image: redis
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    network_mode: "host"
+    volumes:
+      - ./sentinel.conf:/usr/local/etc/redis/sentinel.conf
+      - ./data:/data
+    ports:
+      - 26379:26379

@@ -1,0 +1,94 @@
+create postgresql
+
+CREATE DATABASE conf ENCODING 'UTF8' OWNER postgres TEMPLATE template0; # the user must be superuser
+max connection = 200 at least
+
+create share folder with nfs.
+
+mount the shared folder on all confluence nodes:
+sudo apt-get install nfs-common
+
+sudo /sbin/mount.nfs X.X.X.X:/home/bynet/confluence-share /media
+
+add row to /etc/fstab file:
+X.X.X.X:/home/bynet/confluence-share /media  nfs  rsize=8192 and wsize=8192,noexec,nosuid
+
+primary:
+
+mkdir confluence
+cd confluence
+copy docker-compose.yml file to here.
+mkdir data --mode=777
+
+make sure that the docker volumes point to data folder and the mount folder.
+
+sudo docker-compose up -d 
+
+enter to the web site on port 8090 and complete the installation.
+
+if all good : sudo docker-compose down
+
+create LB - haproxy on diffrent VM:
+
+sudo apt install haproxy 
+
+frontend confluence-http
+    bind *:80
+    default_backend confluence-http
+    mode tcp
+    option tcplog
+
+backend confluence-http
+    balance source
+    mode tcp
+    server confluence-0 X.X.X.102:8090 check
+    server confluence-1 X.X.X.100:8090 check
+
+frontend confluence-https
+    bind *:443
+    default_backend confluence-https
+    mode tcp
+    option tcplog
+
+backend confluence-https
+    balance source
+    mode tcp
+    server confluence-0 X.X.X.102:8090 check
+    server confluence-1 X.X.X.100:8090 check
+
+sudo systemctl restart haproxy.service
+
+
+
+second node:
+
+mkdir confluence
+cd confluence
+copy docker-compose.yml file to here.
+Copy the local home directory (data folder) from node 1 to node 2 to data folder inside confluence
+
+make sure that the docker volumes point to data folder and the mount folder.
+
+optional:
+sudo chmod -R 777 data
+sudo chown -R 2002:2002 data
+sudo chmod -R 777 MOUNT-FOLDER
+
+
+#############################################
+start confluence one node at a time:
+
+Start Confluence on node 1 (sudo docker-compose up -d)
+Wait for Confluence to become available on node 1
+Start Confluence on node 2 (sudo docker-compose up -d)
+Wait for Confluence to become available on node 2
+
+look in general configuration > clustering to see if all node connecting.
+
+############################################
+test cluster:
+Access a node via your load balancer URL, and create a new document on this node.
+Ensure the new document is visible by accessing it directly on a different node.
+Search for the new document on the original node, and ensure it appears.
+Search for the new document on another node, and ensure it appears.
+

@@ -1,0 +1,23 @@
+version: "3.3"
+
+services:
+  confluence:
+    image: atlassian/confluence-server
+    network_mode: "host"
+#    environment:
+#    - ATL_JDBC_URL=10.8.24.101
+#    - ATL_JDBC_USER=confuser
+#    - ATL_JDBC_PASSWORD=password
+#    - ATL_DB_TYPE=postgresql
+#    - ATL_CLUSTER_TYPE=tcp_ip
+#    - ATL_CLUSTER_NAME=miki
+#    - ATL_PRODUCT_HOME_SHARED="10.8.24.101:/home/bynet/confluence-share"
+    volumes:
+    - /home/bynet/confluence/data:/var/atlassian/application-data/confluence
+    - /media:/media
+    ports:
+    - "8090"
+    - "8091"
+    - "5801"
+    - "5701"
+    - "25500"
